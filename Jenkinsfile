@@ -25,7 +25,7 @@ pipeline {
                         sh '''
                             git checkout spark-1.11.10
                             echo '\n  hvm_xtor:\n    PATH: $RTL_CAD_ROOT/spark/hvm_xtor/release-1.25.0_abi_1/\n\n  tap_xtor:\n    PATH: $RTL_CAD_ROOT/spark/tap_xtor/spark-1.10.0_sles12_fix' >> cfg/repositories.yml
-                            echo replacing files
+                           echo replacing files
                             rm -v cfg/buildProjectCfg.yml
                             cp -v /nfs/fm/disks/mpe_emu_002/jenkins/unitests/source_files/buildProjectCfg.yml cfg/
                         '''
@@ -45,6 +45,68 @@ pipeline {
                         '''
                     }
                 }
+            }
+        }
+        
+        stage('Tests'){
+            steps{
+                echo 'Run Tests'
+                echo 'Building tests'
+                dir("${TOP_FOLDER_NAME}") {
+                    sh 'pwd'
+                    sh 'ls -l'
+                    sh 'make --version'
+                    echo PATH_SPARK_SAMPLE_FOLDER
+                    sh '''
+                        echo Building tests
+                        cd sample_project
+                        export MODEL_ROOT=$PWD
+                        echo $MODEL_ROOT
+                        cp -r /nfs/fm/disks/mpe_emu_002/whidberc/hvm_xtor_tests/backup/hvm_xtor_test .
+                        cd hvm_xtor_test
+                        pwd
+                        cmake .
+                        cmake --build .
+                        cd test_hvm_xtor/
+                    '''
+                }
+                echo 'Running tests'
+                dir("${TOP_FOLDER_NAME}"){
+                    sh '''
+                        cd sample_project/hvm_xtor_test/test_hvm_xtor/
+                        pwd
+                        ./run --gtest_output="xml:testresults.xml" --gtest_filter=-SimicsTest.*
+                    '''
+                    dir("sample_project"){
+                        dir("hvm_xtor_test"){
+                            dir('test_hvm_xtor'){
+                                sh 'pwd'
+                                junit '**/testresults.xml'
+                            }
+                        }
+                    }
+                    sh '''
+                        cd sample_project/hvm_xtor_test/
+                        lcov --capture --directory CMakeFiles/ --output-file coverage.info
+                        genhtml coverage.info --output-directory out
+                    '''
+                    dir("sample_project"){
+                        dir("hvm_xtor_test"){
+                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'out', reportFiles: 'index.html', reportName: 'Coverage Report', reportTitles: '', useWrapperFileDirectly: true])
+                        }
+                    }
+                }
+                
+            }
+        }
+    }
+    post {
+        always {
+            echo "${TMP_FOLDER}"
+            dir("${TMP_FOLDER}") {
+                sh "pwd"
+                sh "rm -rf ${TMP_FOLDER2}"
+                deleteDir()
             }
         }
     }
