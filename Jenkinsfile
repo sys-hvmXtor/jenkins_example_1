@@ -25,7 +25,7 @@ pipeline {
                         sh '''
                             git checkout spark-1.11.10
                             echo '\n  hvm_xtor:\n    PATH: $RTL_CAD_ROOT/spark/hvm_xtor/release-1.25.0_abi_1/\n\n  tap_xtor:\n    PATH: $RTL_CAD_ROOT/spark/tap_xtor/spark-1.10.0_sles12_fix' >> cfg/repositories.yml
-                           echo replacing files
+                            echo replacing files
                             rm -v cfg/buildProjectCfg.yml
                             cp -v /nfs/fm/disks/mpe_emu_002/jenkins/unitests/source_files/buildProjectCfg.yml cfg/
                         '''
