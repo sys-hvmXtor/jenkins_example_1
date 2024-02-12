@@ -1,6 +1,7 @@
 @Library('workflow-api-library') _
 pipeline {
-    agent {label 'fmci70480'}
+    //agent {label 'fmci70480'}
+    agent any
     environment {
         TIME = Calendar.getInstance().getTime().format('YYYYMMdd_hhmmss',TimeZone.getTimeZone('CST'))
         TOP_FOLDER_NAME = 'HVM_xactor_' +"${TIME}"
@@ -53,9 +54,6 @@ pipeline {
                 echo 'Run Tests'
                 echo 'Building tests'
                 dir("${TOP_FOLDER_NAME}") {
-                    sh 'pwd'
-                    sh 'ls -l'
-                    sh 'make --version'
                     echo PATH_SPARK_SAMPLE_FOLDER
                     sh '''
                         echo Building tests
