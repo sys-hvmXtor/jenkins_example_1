@@ -86,7 +86,7 @@ pipeline {
                     sh '''
                         cd sample_project/hvm_xtor_test/
                         lcov --capture --directory CMakeFiles/ --output-file coverage.info
-                        lcov --remove coverage.info '/nfs/site/eda/*' --output-file coverage.info
+                        lcov --remove coverage.info '/nfs/site/eda/*' '/nfs/site/itools/*' --output-file coverage.info
                         genhtml coverage.info --output-directory out
                     '''
                     dir("sample_project"){
