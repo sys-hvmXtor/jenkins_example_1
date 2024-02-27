@@ -13,7 +13,7 @@ pipeline {
         TMP_FOLDER2 = 'HVM_xactor_' +"${TIME}" + "@tmp" + "@tmp"
     }
     stages {
-        stage ('Checkout') {
+        stage ('Checkout ') {
             steps {
                 script {
                     postWorkflowRun()
@@ -34,7 +34,7 @@ pipeline {
                 }
             }
         }
-        stage('Build'){
+        stage('Build '){
             steps{
                 echo 'Build'
                 dir("${TOP_FOLDER_NAME}") {
@@ -49,7 +49,7 @@ pipeline {
             }
         }
         
-        stage('Tests'){
+        stage('Tests '){
             steps{
                 echo 'Run Tests'
                 echo 'Building tests'
@@ -68,7 +68,7 @@ pipeline {
                         cd test_hvm_xtor/
                     '''
                 }
-                echo 'Running tests'
+                echo 'Running tests '
                 dir("${TOP_FOLDER_NAME}"){
                     sh '''
                         cd sample_project/hvm_xtor_test/test_hvm_xtor/
