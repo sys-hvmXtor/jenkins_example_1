@@ -13,7 +13,7 @@ pipeline {
         TMP_FOLDER2 = 'HVM_xactor_' +"${TIME}" + "@tmp" + "@tmp"
     }
     stages {
-        stage ('Checkout ') {
+        stage ('Checkout') {
             steps {
                 script {
                     postWorkflowRun()
@@ -34,7 +34,7 @@ pipeline {
                 }
             }
         }
-        stage('Build '){
+        stage('Build'){
             steps{
                 echo 'Build'
                 dir("${TOP_FOLDER_NAME}") {
